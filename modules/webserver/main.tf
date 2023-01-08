@@ -13,7 +13,7 @@ data "aws_ami" "amzn2-ami" {
   }
 }
 
-resource "aws_default_security_group" "app-sg" {
+resource "aws_security_group" "app-sg" {
   vpc_id = var.vpc_id
 
   ingress {
@@ -42,7 +42,7 @@ resource "aws_default_security_group" "app-sg" {
   }
 
   tags = {
-    Name = "${var.environment}-app-default-sg"
+    Name = "${var.environment}-app-sg"
   }
 }
 
@@ -58,7 +58,7 @@ resource "aws_instance" "app-server" {
   associate_public_ip_address = true
 
   subnet_id                   = var.subnet_id
-  vpc_security_group_ids      = [aws_default_security_group.app-sg.id]
+  vpc_security_group_ids      = [aws_security_group.app-sg.id]
   key_name                    = aws_key_pair.app-kp.key_name
 
   user_data = file("entry-script.sh")
