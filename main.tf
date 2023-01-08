@@ -5,11 +5,12 @@ variable "vpc_cidr_block" {}
 variable "subnet_cidr_block" {}
 variable "availability_zone" {}
 variable "my_ip" {}
-variable "instance_keypair_name" {}
 variable "instance_type" {
   default = "t2.micro"
 }
-
+variable "public_key_file" {
+  default = "~/.ssh/id_ed25519.pub"
+}
 
 resource "aws_vpc" "app-vpc" {
   cidr_block = var.vpc_cidr_block
@@ -98,6 +99,11 @@ data "aws_ami" "amzn2-ami" {
   }
 }
 
+resource "aws_key_pair" "app-kp" {
+  key_name_prefix = "app-kp-"
+  public_key = file(var.public_key_file)
+}
+
 resource "aws_instance" "app-server" {
   instance_type               = var.instance_type
   availability_zone           = var.availability_zone
@@ -106,7 +112,7 @@ resource "aws_instance" "app-server" {
 
   subnet_id                   = aws_subnet.app-subnet.id
   vpc_security_group_ids      = [aws_default_security_group.app-sg.id]
-  key_name                    = var.instance_keypair_name
+  key_name                    = aws_key_pair.app-kp.key_name
 
   tags = {
     Name = "${var.environment}-app-instance"
