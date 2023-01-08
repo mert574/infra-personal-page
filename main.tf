@@ -114,6 +114,9 @@ resource "aws_instance" "app-server" {
   vpc_security_group_ids      = [aws_default_security_group.app-sg.id]
   key_name                    = aws_key_pair.app-kp.key_name
 
+  user_data = file("entry-script.sh")
+  user_data_replace_on_change = true
+
   tags = {
     Name = "${var.environment}-app-instance"
   }
