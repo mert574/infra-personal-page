@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 1.3"
+
+  backend "s3" {
+    bucket = "app-infra-01"
+    key = "tf/state.tfstate"
+    region = "eu-west-3"
+  }
+}
+
 provider "aws" {}
 
 module "vpc" {
