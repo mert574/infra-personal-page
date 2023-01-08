@@ -5,12 +5,8 @@ variable "vpc_cidr_block" {}
 variable "subnet_cidr_block" {}
 variable "availability_zone" {}
 variable "my_ip" {}
-variable "instance_type" {
-  default = "t2.micro"
-}
-variable "public_key_file" {
-  default = "~/.ssh/id_ed25519.pub"
-}
+variable "instance_type" {}
+variable "public_key_file" {}
 
 resource "aws_vpc" "app-vpc" {
   cidr_block = var.vpc_cidr_block

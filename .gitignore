@@ -6,3 +6,5 @@
 
 *.tfvars
 *.tfvars.*
+
+!*.example

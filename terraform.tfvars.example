@@ -1,0 +1,10 @@
+environment = "development"
+availability_zone = "eu-west-3a"
+
+vpc_cidr_block = "10.0.0.0/16"
+subnet_cidr_block = "10.0.10.0/24"
+
+instance_type = "t2.micro"
+
+my_ip = "x.x.x.x/32"
+public_key_file = "~/.ssh/id_ed25519.pub"
