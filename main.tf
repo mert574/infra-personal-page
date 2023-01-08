@@ -113,11 +113,11 @@ resource "aws_instance" "app-server" {
   user_data = file("entry-script.sh")
   user_data_replace_on_change = true
 
+  provisioner "local-exec" {
+    command = "echo Instance IP: ${self.public_ip}"
+  }
+
   tags = {
     Name = "${var.environment}-app-instance"
   }
-}
-
-output "instance_ip" {
-  value = aws_instance.app-server.public_ip
 }
