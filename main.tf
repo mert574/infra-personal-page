@@ -5,6 +5,11 @@ variable "vpc_cidr_block" {}
 variable "subnet_cidr_block" {}
 variable "availability_zone" {}
 variable "my_ip" {}
+variable "instance_keypair_name" {}
+variable "instance_type" {
+  default = "t2.micro"
+}
+
 
 resource "aws_vpc" "app-vpc" {
   cidr_block = var.vpc_cidr_block
@@ -76,4 +81,38 @@ resource "aws_default_security_group" "app-sg" {
   tags = {
     Name = "${var.environment}-app-default-sg"
   }
+}
+
+data "aws_ami" "amzn2-ami" {
+  most_recent = true
+  owners = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+resource "aws_instance" "app-server" {
+  instance_type               = var.instance_type
+  availability_zone           = var.availability_zone
+  ami                         = data.aws_ami.amzn2-ami.image_id
+  associate_public_ip_address = true
+
+  subnet_id                   = aws_subnet.app-subnet.id
+  vpc_security_group_ids      = [aws_default_security_group.app-sg.id]
+  key_name                    = var.instance_keypair_name
+
+  tags = {
+    Name = "${var.environment}-app-instance"
+  }
+}
+
+output "instance_ip" {
+  value = aws_instance.app-server.public_ip
 }
