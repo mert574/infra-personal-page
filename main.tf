@@ -31,8 +31,8 @@ resource "aws_internet_gateway" "app-igw" {
   }
 }
 
-resource "aws_route_table" "app-rtb" {
-  vpc_id = aws_vpc.app-vpc.id
+resource "aws_default_route_table" "app-rtb" {
+  default_route_table_id = aws_vpc.app-vpc.default_route_table_id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -42,9 +42,4 @@ resource "aws_route_table" "app-rtb" {
   tags = {
     Name = "${var.environment}-app-rtb"
   }
-}
-
-resource "aws_route_table_association" "app-rtb-assc" {
-  route_table_id = aws_route_table.app-rtb.id
-  subnet_id = aws_subnet.app-subnet.id
 }
